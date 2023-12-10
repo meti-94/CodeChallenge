@@ -1,0 +1,7 @@
+venv/
+conf.env
+data/
+runs/
+Collect/__pycache__/
+DAL/__pycache__/
+Train/__pycache__/

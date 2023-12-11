@@ -70,7 +70,10 @@ def eval_dataset(data_path):
         for message in messages:
             num_tokens += tokens_per_message
             for key, value in message.items():
-                num_tokens += len(encoding.encode(value))
+                try:
+                    num_tokens += len(encoding.encode(value))
+                except:
+                    print(key, value, message)
                 if key == "name":
                     num_tokens += tokens_per_name
         num_tokens += 3

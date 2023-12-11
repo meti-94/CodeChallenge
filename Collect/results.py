@@ -21,7 +21,9 @@ def check_job(job_id):
     logging.info(job.status)
     logging.info(type(job))
     if job.status in ['validating_files', 'queued', 'running', 'failed', 'cancelled']:
-        print(job.status)
+        logging.warning(job.status)
+        if job.status=='failed':
+            logging.warning(job.error)
         return False
     if job.status == 'succeeded':
         return True

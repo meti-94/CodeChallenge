@@ -119,7 +119,16 @@ def track_samples(data_file):
     with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
         df.to_excel(writer, sheet_name=sheet_name, index=False)
 
+def readable_sample(count=10):
+    
+    # Load the dataset
+    df = pd.read_excel('./data/samples_v2.xlsx')
+    return df[:count].to_dict()
+
+    
 if __name__ == "__main__":
-    create_training_subset(2, 5)
-    create_validation_subset(5)
-    create_subset()
+    # create_training_subset(2, 5)
+    # create_validation_subset(5)
+    # create_subset()
+    print(readable_sample())
+    print(readable_sample(2))

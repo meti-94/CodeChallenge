@@ -1,6 +1,10 @@
 import os
+import pandas as pd
 from time import sleep
+from openai import OpenAI
 from dotenv import load_dotenv
+from DAL.data import DEFAULT_SYSTEM_PROMPT
+
 
 
 def load_env_variables(file_path='conf.env'):
@@ -37,3 +41,49 @@ def wait_untill_done(job_id, client):
             if m.startswith("New fine-tuned model created: "):
                 return m.split("created: ")[1], events
         sleep(10)
+
+def provide_answer(question, model_name, maxtokens=100, tmp=0, choices_n=1):
+    """
+    Get model-generated responses for a given question using the OpenAI API.
+
+    Parameters:
+    - question (str): The user's input question.
+    - model_name (str): The name of the OpenAI language model to use.
+    - maxtokens (int): The maximum number of tokens in the generated response.
+    - tmp (float): The temperature parameter controlling the randomness of the output.
+    - choices_n (int): The number of response choices to generate.
+
+    Returns:
+    - list: A list of model-generated responses for the given question.
+    """
+
+    # Create an OpenAI client
+    client = OpenAI()
+
+    # Make a request to the OpenAI API for model-generated responses
+    completion = client.chat.completions.create(
+        model=model_name,
+        messages=[
+            {"role": "system", "content": DEFAULT_SYSTEM_PROMPT},
+            {"role": "user", "content": question}
+        ],
+        max_tokens=maxtokens,
+        temperature=tmp,
+        n=choices_n
+    )
+
+    # Extract and return the content of the generated responses
+    return [item.message.content for item in completion.choices]
+
+
+if __name__=='__main__':
+    load_env_variables()
+    answers = provide_answer(
+                    question = 'روی سرورهاتون سی پنل هم دارین؟',
+                    model_name = "gpt-3.5-turbo-1106",
+                    maxtokens= 30,
+                    tmp=1,
+                    choices_n=2)
+    for ans in answers:
+        print(ans)
+
